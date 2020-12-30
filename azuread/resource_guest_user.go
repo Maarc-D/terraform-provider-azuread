@@ -51,7 +51,8 @@ func resourceGuestUserCreate(d *schema.ResourceData, meta interface{}) error {
 	// send invitation : guestUserClient.Create
 	email := d.Get("mail").(string)
 	username := d.Get("display_name").(string)
-	invitationObj := graph.InvitationSended{InvitedUserEmailAddress: to.StringPtr(email), InviteRedirectURL: to.StringPtr("https://portal.azure.com"), SendInvitationMessage: to.BoolPtr(true), InvitedUserDisplayName: to.StringPtr(username)}
+	tenantId := meta.(*ArmClient).tenantID
+	invitationObj := graph.InvitationSended{InvitedUserEmailAddress: to.StringPtr(email), InviteRedirectURL: to.StringPtr("https://portal.azure.com/" + tenantId), SendInvitationMessage: to.BoolPtr(true), InvitedUserDisplayName: to.StringPtr(username)}
 	invitation, err := guestUserClient.Create(ctx, invitationObj)
 	if err != nil {
 		log.Printf("[DEBUG] Error Creating Guest User : %+v", err)
